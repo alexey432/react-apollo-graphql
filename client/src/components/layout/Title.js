@@ -11,12 +11,12 @@ const getStyles = () => ({
 })
 
 
-const Title = () => {
+const Title = ({ title }) => {
     const styles = getStyles();
 
 
     return (
-        <h1 style={styles.title}>People</h1>
+        <h1 style={styles.title}>{title}</h1>
     );
 }
 

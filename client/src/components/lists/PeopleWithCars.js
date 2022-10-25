@@ -1,9 +1,9 @@
 import { List, Spin } from "antd";
 import { GET_PEOPLE } from '../../queries';
 import { useQuery } from "@apollo/client";
-import Person from '../listItems/Person';
+import PersonWithCars from '../listItems/PersonWithCars';
 
-const People = () => {
+const PeopleWithCars = () => {
     const { loading, error, data } = useQuery(GET_PEOPLE);
     console.log(data);
 
@@ -15,7 +15,7 @@ const People = () => {
             {loading ? (<Spin />) : (
                 <List>
                     {data && data.people.map(person => (
-                        <List.Item key={person.id}><Person person={person} /></List.Item>
+                        <List.Item key={person.id}><PersonWithCars person={person} /></List.Item>
                     ))}
                 </List>
             )}
@@ -23,4 +23,4 @@ const People = () => {
     );
 }
 
-export default People;
+export default PeopleWithCars;

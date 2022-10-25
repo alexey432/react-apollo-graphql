@@ -6,7 +6,7 @@ import { useMutation } from '@apollo/client';
 import { UPDATE_PERSON, GET_PEOPLE } from '../../queries';
 
 
-const UpdatePerson = ({ firstName, lastName, handleClick }) => {
+const UpdatePerson = ({ id, firstName, lastName, handleClick }) => {
 
     const [updatePerson] = useMutation(UPDATE_PERSON)
 
@@ -22,7 +22,7 @@ const UpdatePerson = ({ firstName, lastName, handleClick }) => {
 
         updatePerson({
             variables: {
-                id: uuidv4(),
+                id,
                 firstName,
                 lastName,
             },
@@ -42,7 +42,7 @@ const UpdatePerson = ({ firstName, lastName, handleClick }) => {
         <Form
             form={form}
             name='add-person-form'
-            layout='vertical'
+            layout='inline'
             onFinish={onFinish}
             initialValues={{
                 firstName: firstName,

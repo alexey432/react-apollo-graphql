@@ -19,7 +19,6 @@ const CustomLink = ({ children, to, ...props }) => {
                 >
                     {children}
                 </Link>
-
             </div>
         </>
     );

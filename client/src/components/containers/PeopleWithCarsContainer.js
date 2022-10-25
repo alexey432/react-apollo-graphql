@@ -1,13 +1,10 @@
 import React from 'react';
 import AddPersonForm from '../form/AddPerson';
-import People from '../lists/People';
+import PeopleWithCars from '../lists/PeopleWithCars';
 
 const PeopleContainer = () => {
     return (
-        <div>
-            <AddPersonForm />
-            <People />
-        </div>
+        <PeopleWithCars />
     );
 }
 
