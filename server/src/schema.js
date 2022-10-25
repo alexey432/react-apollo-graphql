@@ -4,21 +4,22 @@ import { people, cars } from "./peopleCarsScheme";
 
 
 const typeDefs = gql`
+    type Car {
+        id: String!
+        year: String!
+        make: String!
+        model: String!
+        price: String!
+        personId: String!
+    }
+    
     type Person {
-        id: ID!
+        id: String!
         firstName: String!
         lastName: String!
         cars: [Car]
     }
 
-    type Car {
-        id: ID!
-        year: String!
-        make: String!
-        model: String!
-        price: String!
-        person: Person
-    }
 
     type Query {
         person(id: String!): Person
@@ -36,10 +37,21 @@ const typeDefs = gql`
 
 const resolvers = {
     Query: {
-        people: () => people,
+        people: () => {
+            const newPeople = people.map(person => {
+                person.cars = cars.filter(car => car.personId === person.id);
+                return person;
+            });
+            return newPeople;
+        },
         cars: () => cars,
         person: (parent, args, context, info) => {
-            return people.find(person => person.id === args.id);
+            const person = people.find(person => person.id === args.id);
+
+            return {
+                ...person,
+                cars: cars.filter(car => car.personId === person.id)
+            };
         }
     },
     Mutation: {
