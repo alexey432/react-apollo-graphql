@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Form, Input, Button, Divider } from 'antd'
+import { Form, Input, Button } from 'antd'
 import { v4 as uuidv4 } from 'uuid';
 import { useMutation } from '@apollo/client';
 import { ADD_PERSON, GET_PEOPLE } from '../../queries';
-import Title from '../layout/Title';
 
 const getStyles = () => ({
     form: {
@@ -15,7 +14,6 @@ const getStyles = () => ({
 
 const AddPersonForm = () => {
     const styles = getStyles();
-    // const [id] = useState(uuidv4());
     const [addPerson] = useMutation(ADD_PERSON)
 
     const [form] = Form.useForm();
@@ -32,16 +30,19 @@ const AddPersonForm = () => {
             variables: {
                 id: uuidv4(),
                 firstName,
-                lastName,
+                lastName
             },
             update: (cache, { data: { addPerson } }) => {
                 const data = cache.readQuery({ query: GET_PEOPLE });
+                console.log('HERE', addPerson);
                 cache.writeQuery({
                     query: GET_PEOPLE,
-                    data: { ...data, people: [...data.people, addPerson] }
+                    data: { ...data, people: [...data.people, { ...addPerson, cars: [] }] } // specify an empty array for cars!
                 });
             }
         })
+
+        form.resetFields();
     }
 
     return (

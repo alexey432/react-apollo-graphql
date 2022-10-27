@@ -2,16 +2,16 @@ import { useState } from 'react'
 
 import { EditOutlined } from '@ant-design/icons'
 import { Card } from 'antd'
-import RemovePerson from '../buttons/RemovePerson'
+import RemoveCar from '../buttons/RemoveCar'
 import UpdateCarForm from '../form/UpdateCar'
 // import RemoveContact from '../buttons/RemoveContact'
 // import UpdateContact from '../forms/UpdateContact'
-import { GET_PERSON } from '../../queries';
-import { useQuery } from "@apollo/client";
+
 
 const getStyles = () => ({
     card: {
         // width: '500px'
+        marginBottom: '10px'
     }
 })
 
@@ -29,13 +29,13 @@ const CarCard = ({ car }) => {
         <>
             {!editCarMode ? (
                 <Card
+                    style={styles.card}
                     key={id}
-                    title={`${year} ${make} ${model} -> $ ${price}`}
+                    title={`${year} ${make} ${model} -> $ ${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
                     type="inner"
-                    style={{ marginBottom: '10px' }}
                     actions={[
                         <EditOutlined key={'edit'} onClick={handleEditCar} />,
-                        <RemovePerson id={id} />
+                        <RemoveCar id={id} />
                     ]}
                 >
                 </Card>

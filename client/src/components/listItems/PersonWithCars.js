@@ -5,12 +5,20 @@ import { Card } from 'antd'
 import RemovePerson from '../buttons/RemovePerson'
 import UpdatePerson from '../form/UpdatePerson'
 import CarCard from './CarCard'
+
+import { Link } from "react-router-dom";
 // import RemoveContact from '../buttons/RemoveContact'
 // import UpdateContact from '../forms/UpdateContact'
 
 const getStyles = () => ({
     card: {
-        width: '1250px'
+        width: '1250px',
+        backgroundColor: '#f5f5f5',
+        border: '1px solid #000',
+    },
+    bwBg: {
+        backgroundColor: '#000',
+        color: '#fff',
     }
 })
 
@@ -35,7 +43,7 @@ const PersonWithCars = ({ person }) => {
                         <RemovePerson id={id} />
                     ]}
                     title={`${firstName} ${lastName}`}
-                    extra={<a href="#">More</a>}
+                    headStyle={styles.bwBg}
                 >
 
                     {/* Map here with cars */}
@@ -55,6 +63,7 @@ const PersonWithCars = ({ person }) => {
 
                     ))}
 
+                    <Link to={`/people/${person.id}`}>Learn more</Link>
                 </Card>
             ) : (
                 <UpdatePerson

@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Form, Input, Button, Divider, InputNumber } from 'antd'
+import { Form, Input, Button, InputNumber } from 'antd'
 import { v4 as uuidv4 } from 'uuid';
 import { useMutation } from '@apollo/client';
-import { ADD_PERSON, GET_PEOPLE } from '../../queries';
-import Title from '../layout/Title';
+import { ADD_CAR, GET_PEOPLE, GET_CARS } from '../../queries';
 import { Select } from 'antd';
 import { useQuery } from "@apollo/client";
 const { Option } = Select;
@@ -21,12 +20,12 @@ const getStyles = () => ({
 const AddCarForm = () => {
     const styles = getStyles();
     // const [id] = useState(uuidv4());
-    const [addCar] = useMutation(ADD_PERSON)
+    const [addCar] = useMutation(ADD_CAR)
     const { loading, error, data } = useQuery(GET_PEOPLE);
+
     const people = data?.people;
 
     const [selectedPersonId, setSelectedPersonId] = useState(null);
-    console.log(selectedPersonId);
     const [form] = Form.useForm();
     const [, forceUpdate] = useState();
 
@@ -35,26 +34,47 @@ const AddCarForm = () => {
     }, []);
 
     const onFinish = values => {
-        const { firstName, lastName } = values
+        const {
+            year,
+            make,
+            model,
+            price, } = values
+        console.log(values);
 
         addCar({
             variables: {
                 id: uuidv4(),
-                firstName,
-                lastName,
+                year: year,
+                make: `${make}`,
+                model: `${model}`,
+                price: price,
+                personId: `${selectedPersonId}`
             },
-            update: (cache, { data: { addPerson } }) => {
+            update: (cache, { data: { addCar } }) => {
                 const data = cache.readQuery({ query: GET_PEOPLE });
+
+                const newData = data.people.map(person => {
+                    if (person.id === addCar.personId) {
+                        return {
+                            ...person,
+                            cars: [...person.cars, { ...addCar }]
+                        }
+                    }
+                    return person;
+                })
+
                 cache.writeQuery({
                     query: GET_PEOPLE,
-                    data: { ...data, people: [...data.people, addPerson] }
+                    data: { ...data, people: [...newData] }
                 });
             }
         })
+
+        form.resetFields();
     }
 
     return (
-        <>
+        <>  {people?.length > 0 && (
             <Form
                 form={form}
                 name='add-person-form'
@@ -66,8 +86,6 @@ const AddCarForm = () => {
                 <Form.Item name="year" label="Year" rules={[{ required: true, message: "Please input the car's year!" }]}>
                     {/* <Input width={20} placeholder="Year" /> */}
                     <InputNumber
-                        min={1}
-                        max={10}
                         // defaultValue={3} 
                         placeholder="Year"
                     />
@@ -116,6 +134,7 @@ const AddCarForm = () => {
                     )}
                 </Form.Item>
             </Form>
+        )}
         </>
     );
 }

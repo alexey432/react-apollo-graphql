@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Form, Input, Button, Divider, InputNumber } from 'antd'
 import { v4 as uuidv4 } from 'uuid';
 import { useMutation } from '@apollo/client';
-import { ADD_PERSON, GET_PEOPLE, GET_PERSON } from '../../queries';
+import { UPDATE_CAR, GET_PEOPLE, } from '../../queries';
 import Title from '../layout/Title';
 import { useQuery } from "@apollo/client";
 import { Select } from 'antd';
@@ -26,7 +26,8 @@ const UpdateCarForm = ({ car, handleClick }) => {
     console.log('people: ', data.people);
     const styles = getStyles();
     // const [id] = useState(uuidv4());
-    const [updateCar] = useMutation(ADD_PERSON)
+    const [updateCar] = useMutation(UPDATE_CAR)
+    const [selectedPersonId, setSelectedPersonId] = useState(personId);
 
     const [form] = Form.useForm();
     const [, forceUpdate] = useState();
@@ -40,24 +41,64 @@ const UpdateCarForm = ({ car, handleClick }) => {
             model,
             year,
             color,
-            price } = values
+            price } = values;
 
         updateCar({
             variables: {
-                id,
-                make,
-                model,
-                year,
-                color,
-                price
+                id: id,
+                make: `${make}`,
+                model: `${model}`,
+                year: year,
+                color: `${color}`,
+                price: price,
+                personId: selectedPersonId
             },
-            // update: (cache, { data: { addPerson } }) => {
-            //     const data = cache.readQuery({ query: GET_PEOPLE });
-            //     cache.writeQuery({
-            //         query: GET_PEOPLE,
-            //         data: { ...data, people: [...data.people, addPerson] }
-            //     });
-            // }
+            update: (cache, { data: { updateCar } }) => {
+                const data = cache.readQuery({ query: GET_PEOPLE });
+
+                const newData = data.people.map(person => {
+
+                    // if the car stays with the same person
+                    if (personId === updateCar.personId) {
+                        if (person.id === updateCar.personId) {
+                            const newCars = person.cars.filter(car => car.id !== updateCar.id)
+
+
+                            return { ...person, cars: [...newCars, updateCar] }
+                        }
+
+                        return person;
+
+                        // if the car doesn't stay with the same person
+                    } else {
+                        // add car to new person
+                        if (person.id === updateCar.personId) {
+
+                            const newCars = [...person.cars, updateCar]
+                            return { ...person, cars: [...newCars] }
+                        }
+
+                        // remove car from previous person
+                        if (person.id === personId) {
+                            const newCars = person.cars.filter(car => car.id !== updateCar.id)
+
+                            return {
+                                ...person,
+                                cars: [...newCars]
+                            }
+                        }
+
+                        return person;
+                    }
+
+                })
+
+
+                cache.writeQuery({
+                    query: GET_PEOPLE,
+                    data: { ...data, people: [...newData] }
+                });
+            }
         })
 
         handleClick();
@@ -107,7 +148,7 @@ const UpdateCarForm = ({ car, handleClick }) => {
                         showSearch
                         placeholder="Select a person"
                         optionFilterProp="people"
-                    // onChange={onChange}
+                        onChange={(id) => setSelectedPersonId(id)}
                     // onSearch={onSearch}
                     // filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
                     >
