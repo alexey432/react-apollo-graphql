@@ -19,11 +19,20 @@ const getStyles = () => ({
     bwBg: {
         backgroundColor: '#000',
         color: '#fff',
+    },
+    backBtn: {
+        display: 'inline-block',
+        backgroundColor: '#000',
+        color: '#fff',
+        padding: '10px 15px',
+        borderRadius: '5px',
+        marginTop: '10px',
+
     }
 })
 
 
-const PersonWithCars = ({ person }) => {
+const PersonWithCars = ({ person, actionsPanel = true }) => {
     const { id, firstName, lastName, cars } = person
     const styles = getStyles()
 
@@ -33,22 +42,23 @@ const PersonWithCars = ({ person }) => {
     const handleEditPerson = () => setEditPersonMode(!editPersonMode)
     // const handleEditCar = () => setEditCarMode(!editCarMode)
 
+    const actions = actionsPanel ? [
+        <EditOutlined key={'edit'} onClick={handleEditPerson} />,
+        <RemovePerson id={id} />] : null;
+
     return (
         <>
             {!editPersonMode ? (
                 <Card
                     style={styles.card}
-                    actions={[
-                        <EditOutlined key={'edit'} onClick={handleEditPerson} />,
-                        <RemovePerson id={id} />
-                    ]}
+                    actions={actions}
                     title={`${firstName} ${lastName}`}
                     headStyle={styles.bwBg}
                 >
 
                     {/* Map here with cars */}
                     {cars.map(car => (
-                        <CarCard key={car.id} car={car} />
+                        <CarCard key={car.id} car={car} actionsPanel={actionsPanel} />
                         // <Card
                         //     key={car.id}
                         //     title={`${car.make} ${car.model}`}
@@ -63,7 +73,7 @@ const PersonWithCars = ({ person }) => {
 
                     ))}
 
-                    <Link to={`/people/${person.id}`}>Learn more</Link>
+                    {actionsPanel ? <Link to={`/people/${person.id}`}>Learn more</Link> : <Link to={`/`} style={styles.backBtn}>Back</Link>}
                 </Card>
             ) : (
                 <UpdatePerson

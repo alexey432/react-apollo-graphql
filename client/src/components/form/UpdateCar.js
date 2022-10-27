@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Form, Input, Button, Divider, InputNumber } from 'antd'
-import { v4 as uuidv4 } from 'uuid';
+import { Form, Input, Button, InputNumber } from 'antd'
 import { useMutation } from '@apollo/client';
 import { UPDATE_CAR, GET_PEOPLE, } from '../../queries';
-import Title from '../layout/Title';
 import { useQuery } from "@apollo/client";
 import { Select } from 'antd';
 const { Option } = Select;
@@ -35,6 +33,8 @@ const UpdateCarForm = ({ car, handleClick }) => {
     useEffect(() => {
         forceUpdate({});
     }, []);
+
+
 
     const onFinish = values => {
         const { make,
@@ -104,6 +104,10 @@ const UpdateCarForm = ({ car, handleClick }) => {
         handleClick();
 
     }
+
+
+    // if Error
+    if (error) return <p>{error.message}</p>;
 
     return (
         <>

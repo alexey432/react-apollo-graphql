@@ -1,10 +1,9 @@
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-import './App.css';
-import Container from './components/containers/Container';
-import PeopleContainer from './components/containers/PeopleWithCarsContainer';
-import CarsContainer from './components/containers/CarsContainer';
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import './App.css';
+import Home from './pages/Home';
+import ShowPage from './pages/ShowPage';
+
 
 
 const client = new ApolloClient({
@@ -17,9 +16,9 @@ function App() {
     <ApolloProvider client={client}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Container />} />
+          <Route path="/" element={<Home />} />
           <Route path="people">
-            <Route path=":id" element={<div>123</div>} />
+            <Route path=":id" element={<ShowPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

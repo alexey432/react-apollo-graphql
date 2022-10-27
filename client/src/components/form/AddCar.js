@@ -73,6 +73,9 @@ const AddCarForm = () => {
         form.resetFields();
     }
 
+    // if Error
+    if (error) return <p>{error.message}</p>;
+
     return (
         <>  {people?.length > 0 && (
             <Form

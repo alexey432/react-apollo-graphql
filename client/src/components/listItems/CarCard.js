@@ -16,7 +16,7 @@ const getStyles = () => ({
 })
 
 
-const CarCard = ({ car }) => {
+const CarCard = ({ car, actionsPanel }) => {
 
     const { id, year, make, model, price } = car
 
@@ -24,6 +24,12 @@ const CarCard = ({ car }) => {
 
     const [editCarMode, setEditCarMode] = useState(false)
     const handleEditCar = () => setEditCarMode(!editCarMode)
+
+    const actions = actionsPanel ? [
+        <EditOutlined key={'edit'} onClick={handleEditCar} />,
+        <RemoveCar id={id} />
+    ] : null;
+
 
     return (
         <>
@@ -33,10 +39,7 @@ const CarCard = ({ car }) => {
                     key={id}
                     title={`${year} ${make} ${model} -> $ ${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
                     type="inner"
-                    actions={[
-                        <EditOutlined key={'edit'} onClick={handleEditCar} />,
-                        <RemoveCar id={id} />
-                    ]}
+                    actions={actions}
                 >
                 </Card>
             ) : (
